@@ -80,10 +80,7 @@ class TokenizerV2:
         ids = [self.str_to_int[s] for s in processed_tokens]
         return ids
 
-    def decode(self, ids):
-        text = ' '.join([self.int_to_str[s] for s in ids])
-        text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
-        return text
+
 
 
 # v2 = TokenizerV2(vocabs)
