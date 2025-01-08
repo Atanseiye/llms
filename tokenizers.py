@@ -86,3 +86,22 @@ class TokenizerV2:
         return text
 
 
+# v2 = TokenizerV2(vocabs)
+# text1 = '''Hello, do you like tea?'''
+# text2 = '''In the sunlit traces of the palace'''
+# text = ' <|endoftext|> '.join([text1, text2])
+# token = v2.encode(text)
+# detoken = v2.decode(token)
+# print(token)
+# print(detoken)
+
+
+# print(len(v2.encode(raw_text)))
+
+
+# IMPLEMENTING BYTE PAIR TOKENIZATION USING tiktoken MODULE
+# initialse the tiktoken libery
+# tokenizer = tiktoken.get_encoding('gpt2')
+# text = (
+#     '''Hello, do you like tea? <|endoftext|> In the sunlit traces of the palace'''
+# )
