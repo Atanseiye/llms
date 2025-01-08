@@ -69,16 +69,7 @@ class TokenizerV2:
         self.str_to_int = vocabs
         self.int_to_str = {i:s for s,i in vocabs.items()}
 
-    def encode(self, text):
-        # text = vocabs(text)
-        split = re.split(r'([,.\'"_!()]|--|\s)', text)
-        processed_tokens = [i.strip() for i in split if i.strip()]
-        processed_tokens = [
-            item if item in self.str_to_int
-            else '<|unk|>' for item in processed_tokens
-        ]
-        ids = [self.str_to_int[s] for s in processed_tokens]
-        return ids
+
 
     def decode(self, ids):
         text = ' '.join([self.int_to_str[s] for s in ids])
