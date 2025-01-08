@@ -22,7 +22,26 @@ vocabs = {token:integer for integer,token in enumerate(unique_tokens)}
 
 
 # ====================================================
+class TokenizerV1:
 
+    def __init__(self, vocabs):
+        self.str_to_int = vocabs
+        self.int_to_str = {i:s for s, i in vocabs.items()}
+
+    def encode(self, text):
+        splits = re.split(r'([.,:;\'"!_]|--|\s)', text)
+        processed_tokens = [i.strip() for i in splits if i.strip()]
+        ids = [self.str_to_int[s] for s in processed_tokens]
+        return ids
+
+    def decode(self, ids):
+        text = ' '.join(self.int_to_str[s] for s in ids)
+        text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
+        return text
+
+tokenizer = TokenizerV1(vocabs)
+text = '''it is the last painted, you know" Mr. Gisburn said with pardonable pride.'''
+ids = tokenizer.encode(text)
 # print(tokenizer.decode(ids))
 
 #            Version 2 Tokenizer
