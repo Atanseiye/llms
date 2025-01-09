@@ -25,4 +25,4 @@ class embedding:
 vocab_size = 6
 output_dim = 3
 embedding_layer = embedding.embedding_layer(vocab_size, output_dim).weight
-print(embedding_layer[3])
+print(embedding_layer[[3, 2, 1, 4]])
