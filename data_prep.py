@@ -5,11 +5,6 @@ from tokenizers import TokenizerV2, vocabs
 import os
 import tiktoken
 
-
-with open('the-verdict.txt', 'r') as file:
-    raw_text = file.read()
-
-
 class DatasetV1(Dataset):
 
     def __init__(self, txt, tokenizer, max_length, stride):
