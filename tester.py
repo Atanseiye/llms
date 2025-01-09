@@ -8,6 +8,16 @@ with open('the-verdict.txt', 'r') as file:
     raw_text = file.read()
 
 
+# ============= testing ==============
+# parameter values
+vocab = vocabs(raw_text=raw_text)
+max_lenght = 512
+vocab_size = len(vocab)
+output_dim = 756
+
+embedding_layer = embedding.token_embedding_layer(vocab_size, output_dim)
+pos_embedding_layer = embedding.token_embedding_layer(max_lenght, output_dim)
+
 
 if __name__ == '__main__':
     datas = create_dataloader_v1(
