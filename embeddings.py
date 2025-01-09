@@ -1,11 +1,17 @@
 import torch
 import numpy
+from data_prep import DatasetV1, Dataset, DataLoader, create_dataloader_v1
 
 '''
 this is a library that is trained on a yoruba dataset of about 80 million tokens 
 that helps converts yoruba word to it's corresponding vectors which however helps to 
 capture similarities in the text.
 '''
+
+
+with open('the-verdict.txt', 'r') as file:
+    raw_text = file.read()
+
 
 class embedding:
 
@@ -14,15 +20,23 @@ class embedding:
         self.output_dim = output_dim
 
 
-    def embedding_layer(vocab_size, output_dim):
+    def token_embedding_layer(vocab_size, output_dim):
 
         torch.manual_seed(123)
         embed_layer = torch.nn.Embedding(vocab_size, output_dim)
         return embed_layer
     
-
+vocab = {}
 # testing
-vocab_size = 6
-output_dim = 3
-embedding_layer = embedding.embedding_layer(vocab_size, output_dim).weight
-print(embedding_layer[[3, 2, 1, 4]])
+# vocab_size = len(vocab)
+# output_dim = 756
+# embedding_layer = embedding.token_embedding_layer(vocab_size, output_dim).weight
+# print(embedding_layer[[3, 2, 1, 4]])
+
+if __name__ == '__main__':
+    datas = create_dataloader_v1(
+        raw_text, batch_size=4, max_length=4, stride=2,
+        shuffle=False, drop_last=False, num_workers=0
+        )
+    real_data = iter(datas)
+    print(next(real_data))
