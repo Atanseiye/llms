@@ -10,7 +10,8 @@ capture similarities in the text.
 '''
 
 
-
+with open('the-verdict.txt', 'r') as file:
+    raw_text = file.read()
 
 
 class embedding:
