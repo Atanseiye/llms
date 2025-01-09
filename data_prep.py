@@ -1,8 +1,8 @@
 import re
-import tiktoken
 import torch
 from torch.utils.data import DataLoader, Dataset
-from tokenizers import TokenizerV2
+from tokenizers import TokenizerV2, vocabs
+import os
 import tiktoken
 
 
@@ -17,8 +17,8 @@ class DatasetV1(Dataset):
         self.target_ids = []
 
         # Tokenize the entire text..
-        # tokenizer = TokenizerV2(txt)  
-        token_ids = tokenizer.encode(text=txt)
+        tokenizer = TokenizerV2(vocabs(txt))  
+        token_ids = tokenizer.encode(txt)
 
         # Use the slidding window to chunck the data into overlapping sequencs of max_length
         for i in range(0, len(token_ids) - max_length, stride):
@@ -41,7 +41,8 @@ def create_dataloader_v1(txt, batch_size=4,
                          max_length=256, stride=128, shuffle=True, 
                          drop_last=True, num_workers=0):
     
-    tokenizer = TokenizerV2(txt)
+    tokenizer = TokenizerV2(vocabs(txt))
+    tokenizer = tokenizer.encode(txt)
     # tokenizer = tiktoken.get_encoding('gpt2')
 
     dataset = DatasetV1(txt, tokenizer, max_length, stride)
@@ -59,9 +60,9 @@ def create_dataloader_v1(txt, batch_size=4,
 
 
 # ==================
-print(torch.__version__)
+# print(torch.__version__)
 dataloaders = create_dataloader_v1(
-    raw_text, batch_size=1, max_length=4, stride=1, shuffle=False
+    raw_text, batch_size=1, max_length=10, stride=2, shuffle=False, num_workers=os.cpu_count()
 )
 
 data_iter = iter(dataloaders)
