@@ -5,21 +5,22 @@ with open('the-verdict.txt', 'r', encoding='utf-8') as f:
     raw_text = f.read()
 
 
-tokens = re.split(r'([,.;:_\'!"()]|--|\s)', raw_text)
+#            Vocabullary Generator
+# ====================================================
+def vocabs(raw_text):
+    tokens = re.split(r'([,.;:_\'!"()]|--|\s)', raw_text)
 
-processed_tokens = [i.strip() for i in tokens if i.strip()]
+    processed_tokens = [i.strip() for i in tokens if i.strip()]
+    # Creating token IDs
+    unique_tokens = sorted(set(processed_tokens))
+    unique_tokens.extend(['<|endoftext|>', '<|unk|>'])
 
-# Creating token IDs
-unique_tokens = sorted(set(processed_tokens))
-unique_tokens.extend(['<|endoftext|>', '<|unk|>'])
-vocab_size = len(unique_tokens)
-
-# the vocabulary of the token IDs
-vocabs = {token:integer for integer,token in enumerate(unique_tokens)}
-# print(vocabs)
+    # the vocabulary of the token IDs
+    vocabs = {token:integer for integer,token in enumerate(unique_tokens)}
+    return vocabs
 
 
-
+#            Version 1 Tokenizer
 # ====================================================
 class TokenizerV1:
 
@@ -38,27 +39,10 @@ class TokenizerV1:
         text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
         return text
 
-tokenizer = TokenizerV1(vocabs)
-text = '''it is the last painted, you know" Mr. Gisburn said with pardonable pride.'''
-ids = tokenizer.encode(text)
-# print(tokenizer.decode(ids))
+
 
 #            Version 2 Tokenizer
 # =====================================================
-
-def vocabs(raw_text):
-    tokens = re.split(r'([,.;:_\'!"()]|--|\s)', raw_text)
-
-    processed_tokens = [i.strip() for i in tokens if i.strip()]
-    # Creating token IDs
-    unique_tokens = sorted(set(processed_tokens))
-    unique_tokens.extend(['<|endoftext|>', '<|unk|>'])
-
-    # the vocabulary of the token IDs
-    vocabs = {token:integer for integer,token in enumerate(unique_tokens)}
-    return vocabs
-
-
 class TokenizerV2:
     """
     This tokenizer uses bit-pair tokenization
@@ -84,18 +68,6 @@ class TokenizerV2:
         text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
         return text
 
-
-# v2 = TokenizerV2(vocabs)
-# text1 = '''Hello, do you like tea?'''
-# text2 = '''In the sunlit traces of the palace'''
-# text = ' <|endoftext|> '.join([text1, text2])
-# token = v2.encode(text)
-# detoken = v2.decode(token)
-# print(token)
-# print(detoken)
-
-
-# print(len(v2.encode(raw_text)))
 
 
 # IMPLEMENTING BYTE PAIR TOKENIZATION USING tiktoken MODULE
