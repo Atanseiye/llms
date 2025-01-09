@@ -26,20 +26,27 @@ class embedding:
         torch.manual_seed(123)
         embed_layer = torch.nn.Embedding(vocab_size, output_dim)
         return embed_layer
-    
+
+
+# ============= testing ==============
+# parameter values
 vocab = vocabs(raw_text=raw_text)
-# testing
+max_lenght = 512
 vocab_size = len(vocab)
 output_dim = 756
+
 embedding_layer = embedding.token_embedding_layer(vocab_size, output_dim)
+pos_embedding_layer = embedding.token_embedding_layer(max_lenght, output_dim)
 
 
 if __name__ == '__main__':
     datas = create_dataloader_v1(
-        raw_text, batch_size=12, max_length=512, stride=384,
+        raw_text, batch_size=12, max_length=max_lenght, stride=384,
         shuffle=False, drop_last=False, num_workers=0
         )
     reatl_data = iter(datas)
     inputs, outputs = next(reatl_data)
     token_embeddings = embedding_layer(inputs)
-    print(token_embeddings.shape)
+    pos_embedding = pos_embedding_layer(torch.arange(max_lenght))
+    print(f"token embeddings shape: {token_embeddings.shape}")
+    print(f"Postional Embedding shape: {pos_embedding.shape}")
