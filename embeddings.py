@@ -1,6 +1,7 @@
 import torch
 import numpy
 from data_prep import DatasetV1, Dataset, DataLoader, create_dataloader_v1
+from tokenizers import vocabs
 
 '''
 this is a library that is trained on a yoruba dataset of about 80 million tokens 
@@ -26,17 +27,19 @@ class embedding:
         embed_layer = torch.nn.Embedding(vocab_size, output_dim)
         return embed_layer
     
-vocab = {}
+vocab = vocabs(raw_text=raw_text)
 # testing
-# vocab_size = len(vocab)
-# output_dim = 756
-# embedding_layer = embedding.token_embedding_layer(vocab_size, output_dim).weight
-# print(embedding_layer[[3, 2, 1, 4]])
+vocab_size = len(vocab)
+output_dim = 756
+embedding_layer = embedding.token_embedding_layer(vocab_size, output_dim)
+
 
 if __name__ == '__main__':
     datas = create_dataloader_v1(
-        raw_text, batch_size=4, max_length=4, stride=2,
+        raw_text, batch_size=12, max_length=512, stride=384,
         shuffle=False, drop_last=False, num_workers=0
         )
-    real_data = iter(datas)
-    print(next(real_data))
+    reatl_data = iter(datas)
+    inputs, outputs = next(reatl_data)
+    token_embeddings = embedding_layer(inputs)
+    print(token_embeddings.shape)

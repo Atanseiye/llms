@@ -5,7 +5,6 @@ with open('the-verdict.txt', 'r', encoding='utf-8') as f:
     raw_text = f.read()
 
 
-text = '''Hello, World. This; is: a' "prank --'''
 tokens = re.split(r'([,.;:_\'!"()]|--|\s)', raw_text)
 
 processed_tokens = [i.strip() for i in tokens if i.strip()]
