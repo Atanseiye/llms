@@ -1,4 +1,6 @@
 from tokenizers import TokenizerV2, vocabs
+from data_prep import DatasetV1, Dataset, DataLoader, create_dataloader_v1
+
 # from data_prep import data_preparaion
 import re
 
@@ -7,17 +9,16 @@ with open('the-verdict.txt', 'r') as file:
 
 
 
-# v2 = TokenizerV2(vocabs(raw_text))
-# token = v2.encode(raw_text)
-# detoken = v2.decode(token)
-# print(detoken)
+if __name__ == '__main__':
+    datas = create_dataloader_v1(
+        raw_text, batch_size=12, max_length=max_lenght, stride=384,
+        shuffle=False, drop_last=False, num_workers=0
+        )
+    
+    reatl_data = iter(datas)
+    inputs, outputs = next(reatl_data)
+    token_embeddings = embedding_layer(inputs)
+    pos_embedding = pos_embedding_layer(torch.arange(max_lenght))
+    input_embedding = token_embeddings + pos_embedding
 
-# data = data_preparaion.prepare(token, context_size=5)
-
-# print(TokenizerV2(vocabs(raw_text)).encode(raw_text))
-
-import os
-
-# Get the number of CPU cores
-num_cores = os.cpu_count()
-print(f"Number of CPU cores: {num_cores}", type(num_cores))
+    print(input_embedding)
