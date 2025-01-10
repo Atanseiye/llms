@@ -33,3 +33,6 @@ if __name__ == '__main__':
     input_embedding = token_embeddings + pos_embedding
 
     print(input_embedding)
+
+    # make a commit tomorrow, first thing first
+    # changed tester.py to main.py
