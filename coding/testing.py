@@ -30,3 +30,5 @@ att_score_2 = torch.empty(inputs.shape[0])
 for i, i_x in enumerate(inputs):
     att_score_2[i] = torch.dot(i_x, query)
     
+attention_weight = softmax_naive(att_score_2)
+print(attention_weight)
