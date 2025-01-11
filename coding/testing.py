@@ -26,9 +26,21 @@ z_coord = inputs[:, 2].numpy()
 
 query = inputs[1]
 
-att_score_2 = torch.empty(inputs.shape[0])
+att_score_2 = torch.empty(6, 6)
 for i, i_x in enumerate(inputs):
-    att_score_2[i] = torch.dot(i_x, query)
+    for j, j_x in enumerate(inputs):
+        att_score_2[i, j] = torch.dot(i_x, j_x)
+
+attention_score = torch.softmax(att_score_2, dim=0)
     
-attention_weight = softmax_naive(att_score_2)
-print(attention_weight)
+
+# context_vec = torch.zeros(query.shape)
+# for i, i_x in enumerate(inputs):
+#     for j, j_x in enumerate(inputs):
+#         context_vec += attention_score[2] * i_x
+
+note = inputs @ inputs.T
+
+print(attention_score)
+print('\n \n')
+print(note)
