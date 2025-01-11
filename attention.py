@@ -9,7 +9,7 @@ class Attenstion:
     def self():
         pass
 
-    def causual():
+    def causal():
         pass
 
     def multihead():
