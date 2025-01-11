@@ -13,3 +13,10 @@ inputs = torch.tensor(
     ]
 )
 
+# Corresponding Words
+words = ['Your', 'journey', 'starts', 'with', 'one', 'step']
+
+# Extract x, y, z coord
+x_coord = inputs[:, 0].numpy()
+y_coord = inputs[:, 1].numpy()
+z_coord = inputs[:, 2].numpy()
