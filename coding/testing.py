@@ -41,6 +41,8 @@ attention_score = torch.softmax(att_score_2, dim=0)
 
 note = inputs @ inputs.T
 
+attention_score_2  = torch.softmax(note)
+
 print(attention_score)
 print('\n \n')
-print(note)
+print(attention_score_2)
