@@ -43,3 +43,15 @@ class Attention(nn.Module):
     def multihead():
         pass
 
+class MultiHead(nn.Module):
+    def __init__(self, d_in, d_out, context_lenght, num_head, dropout, qvk_bais=True):
+        super().__init__()
+        self.heads = nn.ModuleList(
+            [
+                Attention(d_in, d_out, context_lenght, dropout, qvk_bais)
+                for _ in range(num_head)
+            ]
+        )
+
+        def forward(self, x):
+            return torch.cat([head(x) for head in self.heads], dim=-1)
