@@ -20,12 +20,5 @@ inputs = torch.tensor(
 # Corresponding Words
 words = ['Your', 'journey', 'starts', 'with', 'one', 'step']
 
-query = inputs[1]
-
-note = inputs @ inputs.T
-
-attention_weigth  = torch.softmax(note, dim=0)
-
-context_vector = attention_weigth @ inputs
-
-print(context_vector)
+batch = torch.stack((inputs, inputs), dim=0)
+print(batch)
