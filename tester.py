@@ -12,5 +12,9 @@ inputs = torch.tensor(
     ]
 )
 
-simplified_attention = Attention.simplified(inputs)
-print(simplified_attention)
+torch.manual_seed(123)
+batch = torch.stack((inputs, inputs), dim=0)
+context_lenght = batch.shape[1]
+ca = Attention(3, 2, context_lenght, 0.0)
+context_vec = ca.causal(batch)
+print(context_vec)
