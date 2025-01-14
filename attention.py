@@ -23,8 +23,22 @@ class Attention(nn.Module):
     def self():
         pass
 
-    def causal():
-        pass
+    def causal(self, x):
+        b, num_tokens, d_in = x.shape
+        keys = self.W_key(x)
+        value = self.W_value(x)
+        queries = self.W_query(x)
+
+        atten_score = queries @ keys.transpose(1, 2)
+        atten_score.masked_fill_(
+            self.mask.bool()[:num_tokens, :num_tokens], -torch.inf
+        )
+        atten_weight = torch.softmax(
+            atten_score / keys.shape[-1]**0.5, dim=1
+        )
+        atten_weight = self.dropout(atten_weight)
+        context_vec = atten_weight @ value
+        return context_vec
 
     def multihead():
         pass
