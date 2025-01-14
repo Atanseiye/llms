@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class Attention(nn.Module):
+class CausalAttention(nn.Module):
 
     def __init__(self, d_in, d_out, context_lenght, dropout, qvk_bais=True):
         super().__init__()
@@ -23,7 +23,7 @@ class Attention(nn.Module):
     def self():
         pass
 
-    def causal(self, x):
+    def forward(self, x):
         b, num_tokens, d_in = x.shape
         keys = self.W_key(x)
         value = self.W_value(x)
@@ -40,18 +40,16 @@ class Attention(nn.Module):
         context_vec = atten_weight @ value
         return context_vec
 
-    def multihead():
-        pass
 
 class MultiHead(nn.Module):
     def __init__(self, d_in, d_out, context_lenght, num_head, dropout, qvk_bais=True):
         super().__init__()
         self.heads = nn.ModuleList(
             [
-                Attention(d_in, d_out, context_lenght, dropout, qvk_bais)
+                CausalAttention(d_in, d_out, context_lenght, dropout, qvk_bais)
                 for _ in range(num_head)
             ]
         )
 
-        def forward(self, x):
-            return torch.cat([head(x) for head in self.heads], dim=-1)
+    def forward(self, x):
+        return torch.cat([head(x) for head in self.heads], dim=-1)

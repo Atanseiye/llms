@@ -1,4 +1,4 @@
-from attention import Attention, MultiHead
+from attention import CausalAttention, MultiHead
 import torch
 
 inputs = torch.tensor(
@@ -18,11 +18,11 @@ batch = torch.stack((inputs, inputs), dim=0)
 context_lenght = batch.shape[1]
 d_in = batch.shape[2]
 d_out = batch.shape[0]
-# ca = Attention(d_in, d_out, context_lenght, 0.0)
-# context_vec = ca.causal(batch)
+# ca = CausalAttention(d_in, d_out, context_lenght, 0.0)
+# context_vec = ca(batch)
 # print(context_vec)
 
 ### MultiHead
-mha = MultiHead(d_in, d_out, context_lenght, 0.0)
+mha = MultiHead(d_in, d_out, context_lenght, 2, 0.0)
 context_vec = mha(batch)
 print(context_vec)
