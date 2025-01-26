@@ -1,9 +1,10 @@
 YOR_GPT_CONFIG_124M = {
-    'vocab_size':50257,
-    'context_lenght':1024,
-    'emb_dim':768,
-    'n_heads':12,
-    'n_layers':12,
-    'frop_rate':0.01,
-    'qkv_bias':False
+    'vocab_size':50257, # Vocabulary size
+    'context_lenght':1024, # THe context lenght
+    'emb_dim':768, # Dimension of the Embedding
+    'n_heads':12, # Number of Attention Heads
+    'n_layers':12, # Number of Layers
+    'drop_rate':0.01, # Dropout Rate
+    'qkv_bias':False # Query-Key-Value Bias
 }
+
