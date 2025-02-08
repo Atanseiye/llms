@@ -49,3 +49,13 @@ torch.manual_seed(123)
 without_shortcut = ExamDeepNN(
     layer_size, use_shortcut=False
 )
+
+with_shortcut = ExamDeepNN(
+    layer_size, use_shortcut=True
+)
+
+print('When shortcut connection was not used: \n',)
+print_grad(without_shortcut, sample_input)
+print('\n')
+print('When shortcut connection was used: \n',)
+print_grad(with_shortcut, sample_input)
