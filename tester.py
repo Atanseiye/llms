@@ -1,4 +1,6 @@
 from attention import CausalAttention, MultiHead
+from layers import Feedforward
+from config import YOR_GPT_CONFIG_124M
 import torch
 
 inputs = torch.tensor(
@@ -25,4 +27,14 @@ d_out = batch.shape[0]
 ### MultiHead
 mha = MultiHead(d_in, d_out, context_lenght, 2, 0.0)
 context_vec = mha(batch)
-print(context_vec)
+# print(context_vec)
+
+
+### Testing the Feedforward
+ffn = Feedforward(YOR_GPT_CONFIG_124M)
+x = torch.rand(2, 3, 768)
+out = ffn(x)
+print(out, '\n', out.shape)
+
+
+               
