@@ -4,21 +4,21 @@ import torch.nn as nn
 
 class DummyGPTModel(nn.Module):
 
-    def __init__(self, cfg):
+    def __init__(self, config):
         super().__init__()
-        self.tok_emd = nn.Embedding(cfg['vocab_size'], cfg['emb_dim'])
-        self.pos_emd = nn.Embedding(cfg['context_lenght'], cfg['emb_dim'])
-        self.drop_emd = nn.Dropout(cfg['drop_rate'])
+        self.tok_emd = nn.Embedding(config['vocab_size'], config['emb_dim'])
+        self.pos_emd = nn.Embedding(config['context_lenght'], config['emb_dim'])
+        self.drop_emd = nn.Dropout(config['drop_rate'])
 
         # Use a placeholder fot transformer block
         self.trf_block = nn.Sequential(
-            * [DummyTransformerBlock(cfg) for _ in range(cfg['n_layers'])]
+            * [DummyTransformerBlock(config) for _ in range(config['n_layers'])]
         )
 
         # Use placeholder for LayerNorm
-        self.final_norm = DummyLayerNorm(cfg['emb_dim'])
+        self.final_norm = DummyLayerNorm(config['emb_dim'])
         self.out_head = nn.Linear(
-            cfg['emb_dim'], cfg['vocab_size'], bias=False
+            config['emb_dim'], config['vocab_size'], bias=False
         )
 
     def forward(self, in_idx):
@@ -36,7 +36,7 @@ class DummyGPTModel(nn.Module):
 
 class DummyTransformerBlock(nn.Module):
 
-    def __init__(self, cfg):
+    def __init__(self, config):
         super().__init__ ()
         # A simple PlaceHolder
 
@@ -47,7 +47,7 @@ class DummyTransformerBlock(nn.Module):
 
 class DummyLayerNorm(nn.Module):
 
-    def __init__(self, cfg):
+    def __init__(self, config):
         super().__init__()
         # this is a simple placeholder
 
