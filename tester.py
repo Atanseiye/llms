@@ -2,6 +2,7 @@ from attention import CausalAttention, MultiHead
 from layers import Feedforward
 from config import YOR_GPT_CONFIG_124M
 import torch
+from transformer import TransformerBlock
 
 inputs = torch.tensor(
     [
@@ -32,9 +33,13 @@ context_vec = mha(batch)
 
 ### Testing the Feedforward
 ffn = Feedforward(YOR_GPT_CONFIG_124M)
-x = torch.rand(2, 3, 768)
+x = torch.rand(2, 4, 768)
 out = ffn(x)
-print(out, '\n', out.shape)
+# print(out, '\n', out.shape)
 
 
-               
+### Test Transformer
+block =TransformerBlock(YOR_GPT_CONFIG_124M)
+output = block(x)
+print('Shape of the transformer block', output.shape, '\n')
+print('Output of the transformer block', output)

@@ -2,8 +2,6 @@ import torch
 from torch import nn
 from layerNorm import LayerNorm
 from layers import Feedforward
-from config import YOR_GPT_CONFIG_124M
-from activation import GELU
 from attention import MultiHead
 
 class TransformerBlock(nn.Module):
@@ -36,5 +34,5 @@ class TransformerBlock(nn.Module):
         x = self.ff(x)
         x = self.drop_shortcut(x)
         x = x + shortcut # Add original inout back
-        
+
         return x
