@@ -6,7 +6,7 @@ class CausalAttention(nn.Module):
 
     def __init__(self, d_in, d_out, context_lenght, dropout, qvk_bais=True):
         super().__init__()
-        self.d_in = d_in
+        self.d_out = d_out
         self.W_query = nn.Linear(d_in, d_out, bias=qvk_bais)
         self.W_key = nn.Linear(d_in, d_out, bias=qvk_bais)
         self.W_value = nn.Linear(d_in, d_out, bias=qvk_bais)
@@ -20,8 +20,6 @@ class CausalAttention(nn.Module):
         context_vector = attention_weight @ word_vectors
         return context_vector
 
-    def self():
-        pass
 
     def forward(self, x):
         b, num_tokens, d_in = x.shape

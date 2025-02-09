@@ -22,17 +22,21 @@ class TransformerBlock(nn.Module):
 
     def forward(self, x):
         # Shortcut connection for attention block
+        print('at input', x.shape)
         shortcut = x
         x = self.norm1(x)
+        print('After Normalization', x.shape)
         x = self.att(x)
+        print('After attention', x.shape)
         x = self.drop_shortcut(x)
-        x = x + shortcut #Add original inout back
+        print('After dropout shortcut', x.shape)
+        x = x + shortcut # Add original input back 1
 
         # Shortcut connection for the Feedforward block
         shortcut = x
         x = self.norm2(x)
         x = self.ff(x)
         x = self.drop_shortcut(x)
-        x = x + shortcut # Add original inout back
+        x = x + shortcut # Add original input back 2
 
         return x
