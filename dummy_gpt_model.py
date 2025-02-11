@@ -2,7 +2,8 @@ from config import YOR_GPT_CONFIG_124M
 from preprocessing import TokenizerV2, vocabs
 from preprocessing import embedding
 from transformer import DummyTransformerBlock, TransformerBlock
-from layers import DummyLayerNorm, LayerNorm
+from layers import LayerNorm
+from postprocessing import generate_text_sample
 import torch
 import torch.nn as nn
 
@@ -49,20 +50,36 @@ txt2 = 'Every day holds a'
 txt3 = 'It is time to'
 txt = txt1 + txt2 + txt3
 
-tokenizer = TokenizerV2(vocabs(txt))
+with open('the-verdict.txt', 'r') as file:
+    text = file.read()
+
+tokenizer = TokenizerV2(vocabs(text))
 batch = []
 batch.append(torch.tensor(tokenizer.encode(txt1)))
 batch.append(torch.tensor(tokenizer.encode(txt2)))
 batch.append(torch.tensor(tokenizer.encode(txt3)))
 batch = torch.stack(batch, dim=0)
-# print(batch)
+
 
 torch.manual_seed(123)
 model = GPTModel(YOR_GPT_CONFIG_124M)
 logits = model(batch)
-print(logits)
-print()
 
+start_context = 'Hello, I am'
+encoded = tokenizer.encode(start_context)
+encoded_tensor = torch.tensor(encoded).unsqueeze(0)
+model.eval()
+out = generate_text_sample(
+    model=model,
+    idx=encoded_tensor,
+    max_new_tokens=6,
+    context_size=YOR_GPT_CONFIG_124M['context_lenght']
+)
+
+print(f"Output is given as {out}")
+
+
+# -------------------------------------------------------------------------
 tot_params = sum(p.numel() for p in model.parameters())
 print(f'The total number of parameters on thr model is {tot_params:,}')
 
