@@ -1,4 +1,3 @@
-from config import YOR_GPT_CONFIG_124M
 from util import GELU
 from torch import nn
 import torch
