@@ -5,6 +5,7 @@ YOR_GPT_CONFIG_124M = {
     'n_heads':12, # Number of Attention Heads
     'n_layers':12, # Number of Layers
     'drop_rate':0.01, # Dropout Rate
-    'qkv_bias':False # Query-Key-Value Bias
+    'qkv_bias':False, # Query-Key-Value Bias
+    'output_dim':756
 }
 

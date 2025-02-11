@@ -29,7 +29,6 @@ class DatasetV1(Dataset):
         return self.input_ids[index], self.target_ids[index]
 
 
-# ==================
 #            Data Loader instance generator
 # ====================================================
 

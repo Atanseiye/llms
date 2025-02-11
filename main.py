@@ -1,6 +1,7 @@
 from preprocessing import TokenizerV2, vocabs
 from preprocessing import DatasetV1, Dataset, DataLoader, create_dataloader_v1
 from preprocessing import embedding
+from config import YOR_GPT_CONFIG_124M
 import torch
 import re
 
