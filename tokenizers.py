@@ -17,53 +17,7 @@ def vocabs(raw_text):
     return vocabs
 
 
-#            Version 1 Tokenizer
-# ====================================================
-class TokenizerV1:
 
-    def __init__(self, vocabs):
-        self.str_to_int = vocabs
-        self.int_to_str = {i:s for s, i in vocabs.items()}
-
-    def encode(self, text):
-        splits = re.split(r'([.,:;\'"!_]|--|\s)', text)
-        processed_tokens = [i.strip() for i in splits if i.strip()]
-        ids = [self.str_to_int[s] for s in processed_tokens]
-        return ids
-
-    def decode(self, ids):
-        text = ' '.join(self.int_to_str[s] for s in ids)
-        text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
-        return text
-
-
-
-#            Version 2 Tokenizer
-# =====================================================
-class TokenizerV2:
-    """
-    This tokenizer uses bit-pair tokenization
-    """
-
-    def __init__(self, vocabs):
-        self.str_to_int = vocabs
-        self.int_to_str = {i:s for s,i in vocabs.items()}
-
-    def encode(self, text):
-        # text = vocabs(text)
-        split = re.split(r'([,.\'"_!()]|--|\s)', text)
-        processed_tokens = [i.strip() for i in split if i.strip()]
-        processed_tokens = [
-            item if item in self.str_to_int
-            else '<|unk|>' for item in processed_tokens
-        ]
-        ids = [self.str_to_int[s] for s in processed_tokens]
-        return ids
-
-    def decode(self, ids):
-        text = ' '.join([self.int_to_str[s] for s in ids])
-        text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
-        return text
 
 
 
