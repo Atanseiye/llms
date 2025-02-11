@@ -27,7 +27,6 @@ class DummyGPTModel(nn.Module):
 
     def forward(self, in_idx):
         batch_size, seq_len = in_idx.shape
-        print(in_idx.shape)
         tok_embeds = self.tok_emd(in_idx)
         pos_embeds = self.pos_emd(torch.arange(seq_len, device=in_idx.device))
         x = tok_embeds+pos_embeds
@@ -49,9 +48,8 @@ txt1 = 'Every steps moves you'
 txt2 = 'Every day holds a'
 txt3 = 'It is time to'
 txt = txt1 + txt2 + txt3
+
 tokenizer = TokenizerV2(vocabs(txt))
-print(tokenizer)
-print('')
 batch = []
 batch.append(torch.tensor(tokenizer.encode(txt1)))
 batch.append(torch.tensor(tokenizer.encode(txt2)))
@@ -62,5 +60,4 @@ batch = torch.stack(batch, dim=0)
 torch.manual_seed(123)
 model = DummyGPTModel(YOR_GPT_CONFIG_124M)
 logits = model(batch)
-print(f"Output shape: {logits.shape} \n")
 print(logits)
