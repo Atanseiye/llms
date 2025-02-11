@@ -12,3 +12,11 @@ class GELU(nn.Module):
             (x + .044715 * torch.pow(x, 3))
             ))
     
+
+class SoftmaxActivation(nn.Module):
+    def __init__(self, dim=-1):  # dim specifies the axis for softmax computation
+        super().__init__()
+        self.dim = dim
+
+    def forward(self, x):
+        return torch.exp(x) / torch.sum(torch.exp(x), dim=self.dim, keepdim=True)
