@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from activation import GELU
+from util import GELU
 
 class ExamDeepNN(nn.Module):
 

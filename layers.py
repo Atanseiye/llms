@@ -1,5 +1,5 @@
 from config import YOR_GPT_CONFIG_124M
-from activation import GELU
+from util import GELU
 from torch import nn
 
 # Feedforward Neural Network
