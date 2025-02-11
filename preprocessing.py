@@ -31,6 +31,8 @@ class DatasetV1(Dataset):
 
 
 # ==================
+#            Data Loader instance generator
+# ====================================================
 
 def create_dataloader_v1(txt, batch_size=4, 
                          max_length=256, stride=128, shuffle=True, 
@@ -101,9 +103,26 @@ class TokenizerV2:
         text = ' '.join([self.int_to_str[s] for s in ids])
         text = re.sub(r'\s+([,.;:_!"\'()])', r'\1', text)
         return text
+    
 
 
+#            Vocabullary Generator
+# ====================================================
+def vocabs(raw_text):
+    tokens = re.split(r'([,.;:_\'!"()]|--|\s)', raw_text)
 
+    processed_tokens = [i.strip() for i in tokens if i.strip()]
+    # Creating token IDs
+    unique_tokens = sorted(set(processed_tokens))
+    unique_tokens.extend(['<|endoftext|>', '<|unk|>'])
+
+    # the vocabulary of the token IDs
+    vocabs = {token:integer for integer,token in enumerate(unique_tokens)}
+    return vocabs
+
+
+#            Embedding Generator
+# ====================================================
 class embedding:
 
     def __init__(self, vocab_size, output_dim):
