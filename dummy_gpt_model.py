@@ -1,4 +1,6 @@
 from config import YOR_GPT_CONFIG_124M
+from attention import MultiHeadAttention
+from layers import LayerNorm, Feedforward
 import torch
 import torch.nn as nn
 
@@ -37,23 +39,51 @@ class DummyGPTModel(nn.Module):
 class DummyTransformerBlock(nn.Module):
 
     def __init__(self, config):
-        super().__init__ ()
-        # A simple PlaceHolder
+        super().__init__()
+        self.att = MultiHeadAttention(
+            d_in=config['emb_dim'],
+            d_out=config['emb_dim'],
+            context_lenght=config['context_lenght'],
+            num_head=config['n_heads'],
+            dropout=config['drop_rate'],
+            qvk_bais=config['qkv_bias']
+        )
+        self.ff = Feedforward(config)
+        self.norm1 = LayerNorm(config['emb_dim'])
+        self.norm2 = LayerNorm(config['emb_dim'])
+        self.drop_shortcut = nn.Dropout(config['drop_rate'])
 
     def forward(self, x):
-        # this block does nothing and just returns it's inputs
+        # Shortcut connection for attention block
+        shortcut = x
+        x = self.norm1(x)
+        x = self.att(x)
+        x = self.drop_shortcut(x)
+        x = x + shortcut # Add original input back 1
+
+        # Shortcut connection for the Feedforward block
+        shortcut = x
+        x = self.norm2(x)
+        x = self.ff(x)
+        x = self.drop_shortcut(x)
+        x = x + shortcut # Add original input back 2
+
         return x
     
 
 class DummyLayerNorm(nn.Module):
 
-    def __init__(self, config):
+    def __init__(self, emb_dim):
         super().__init__()
-        # this is a simple placeholder
+        self.eps = 1e-5
+        self.scale = nn.Parameter(torch.ones(emb_dim))
+        self.shift = nn.Parameter(torch.zeros(emb_dim))
 
     def forward(self, x):
-        # this function does nothing, it just returns it's imputs
-        return x
+        mean = x.mean(dim=1, keepdim=True)
+        var = x.var(dim=1, keepdim=True, unbiased=False)
+        norm_x = (x - mean) / torch.sqrt(var + self.eps)
+        return self.scale * norm_x + self.shift
     
 
 
