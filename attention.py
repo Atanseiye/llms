@@ -53,7 +53,7 @@ class MultiHead(nn.Module):
         return torch.cat([head(x) for head in self.heads], dim=-1)
 
 
-class MultiHeadAttention(nn.Module):
+class MultiHeadAttention2(nn.Module):
     def __init__(self, d_in, d_out, context_lenght, num_head, dropout, qvk_bais=True):
         super().__init__()
         assert (d_out % num_head == 0), \
@@ -110,7 +110,7 @@ class MultiHeadAttention(nn.Module):
     
 
 
-class MultiHeadAttention2(nn.Module):
+class MultiHeadAttention(nn.Module):
     def __init__(self, d_in, d_out, context_lenght, num_head, dropout, qvk_bais=True):
         super().__init__()
         assert d_out % num_head == 0, "d_out must be divisible by num_head"
