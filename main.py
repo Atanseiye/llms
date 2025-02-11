@@ -16,8 +16,8 @@ max_lenght = 512
 vocab_size = len(vocab)
 output_dim = 756
 
-embedding_layer = embedding.token_embedding_layer(vocab_size, output_dim)
-pos_embedding_layer = embedding.token_embedding_layer(max_lenght, output_dim)
+embedding_layer = embedding.token_embedding_layer(YOR_GPT_CONFIG_124M['vocab_size'], YOR_GPT_CONFIG_124M['output_dim'])
+pos_embedding_layer = embedding.token_embedding_layer(max_lenght, YOR_GPT_CONFIG_124M['output_dim'])
 
 
 if __name__ == '__main__':
