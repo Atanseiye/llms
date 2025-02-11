@@ -1,12 +1,12 @@
 from config import YOR_GPT_CONFIG_124M
 from preprocessing import TokenizerV2, vocabs
 from preprocessing import embedding
-from transformer import DummyTransformerBlock
-from layers import DummyLayerNorm
+from transformer import DummyTransformerBlock, TransformerBlock
+from layers import DummyLayerNorm, LayerNorm
 import torch
 import torch.nn as nn
 
-class DummyGPTModel(nn.Module):
+class GPTModel(nn.Module):
 
     def __init__(self, config):
         super().__init__()
@@ -16,11 +16,11 @@ class DummyGPTModel(nn.Module):
 
         # Use a placeholder fot transformer block
         self.trf_block = nn.Sequential(
-            * [DummyTransformerBlock(config) for _ in range(config['n_layers'])]
+            *[TransformerBlock(config) for _ in range(config['n_layers'])]
         )
 
         # Use placeholder for LayerNorm
-        self.final_norm = DummyLayerNorm(config['emb_dim'])
+        self.final_norm = LayerNorm(config['emb_dim'])
         self.out_head = nn.Linear(
             config['emb_dim'], config['vocab_size'], bias=False
         )
@@ -58,6 +58,13 @@ batch = torch.stack(batch, dim=0)
 # print(batch)
 
 torch.manual_seed(123)
-model = DummyGPTModel(YOR_GPT_CONFIG_124M)
+model = GPTModel(YOR_GPT_CONFIG_124M)
 logits = model(batch)
 print(logits)
+print()
+
+tot_params = sum(p.numel() for p in model.parameters())
+print(f'The total number of parameters on thr model is {tot_params:,}')
+
+print(f'Token Embedding Shape: {model.tok_emd.weight.shape}')
+print(f'Output Layer Shape: {model.out_head.weight.shape}')
