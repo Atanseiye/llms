@@ -1,7 +1,6 @@
 import re
 import torch
 from torch.utils.data import DataLoader, Dataset
-from tokenizers import TokenizerV2, vocabs
 import os
 import tiktoken
 
