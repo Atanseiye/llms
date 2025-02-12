@@ -123,11 +123,11 @@ def vocabs(raw_text):
 # ====================================================
 class embedding:
 
-    def __init__(self, vocab_size, output_dim):
-        self.vocab_size = vocab_size
-        self.output_dim = output_dim
+    # def __init__(self, vocab_size, output_dim):
+    #     self.vocab_size = vocab_size
+    #     self.output_dim = output_dim
 
-
+    @staticmethod
     def token_embedding_layer(vocab_size, output_dim):
 
         torch.manual_seed(123)

@@ -1,2 +1,4 @@
 myllm/
 __pycache__/
+checkpoints/
+models/

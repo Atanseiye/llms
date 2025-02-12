@@ -19,4 +19,4 @@ class Softmax(nn.Module):
         self.dim = dim
 
     def forward(self, x):
-        return torch.exp(x) / torch.sum(torch.exp(x), dim=self.dim, keepdim=True)
+        return torch.tensor(torch.exp(x) / torch.sum(torch.exp(x), dim=self.dim, keepdim=True))
