@@ -31,6 +31,7 @@ class GPTModel(nn.Module):
 
     def forward(self, in_idx):
         batch_size, seq_len = in_idx.shape
+        print(f"Max token ID in input: {in_idx.max().item()}, Vocab Size: {self.tok_emd.num_embeddings}")
         tok_embeds = self.tok_emd(in_idx)
         pos_embeds = self.pos_emd(torch.arange(seq_len, device=in_idx.device))
         x = tok_embeds + pos_embeds

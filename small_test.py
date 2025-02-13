@@ -8,7 +8,7 @@ import torch
 # ================================
 # Load Dataset
 # ================================
-with open('tokenizerss/cleaned_yoruba_text.txt', 'r', encoding='utf-8') as f:
+with open('the-verdict.txt', 'r') as f:
     text_data = f.read()
 
 # ================================
@@ -31,20 +31,20 @@ torch.manual_seed(42)
 
 train_loader = create_dataloader_v1(
     train_data, 
-    batch_size=1024,
+    batch_size=2,
     max_length= YOR_GPT_CONFIG_124M['context_lenght'], 
     stride= YOR_GPT_CONFIG_124M['context_lenght'], 
-    num_workers=2,
+    num_workers=0,
     shuffle=True,
     drop_last=True
     )
 
 val_loader = create_dataloader_v1(
     val_data, 
-    batch_size=1024,
+    batch_size=2,
     max_length= YOR_GPT_CONFIG_124M['context_lenght'], 
     stride= YOR_GPT_CONFIG_124M['context_lenght'], 
-    num_workers=2,
+    num_workers=0,
     shuffle=False,
     drop_last=False
     )
@@ -115,7 +115,7 @@ def calc_loss_loader(data_loader, model, device, num_batches=None):
     else:
         num_batches = min(num_batches, len(data_loader))
     for i, (input_data, target_data) in enumerate(data_loader):
-        if i >= num_batches:
+        if i < num_batches:
             loss = calc_loss_batch(input_data, target_data, model, device)
             total_loss += loss.item()
         else:

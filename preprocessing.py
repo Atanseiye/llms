@@ -6,7 +6,7 @@ import tiktoken
 
 class DatasetV1(Dataset):
 
-    def __init__(self, txt, tokenizer, max_length, stride):
+    def __init__(self, txt, tokenizer, max_length, stride, vocab_size):
         self.input_ids = []
         self.target_ids = []
 
@@ -15,7 +15,8 @@ class DatasetV1(Dataset):
         # token_ids = tokenizer.encode(txt)
 
         # for small test
-        token_ids = tokenizer.get_encoding('gpt2').encode(txt, allowed_special={"<|endoftext|>"})
+        token_ids = tokenizer.encode(txt, disallowed_special=())
+        token_ids = [min(t, vocab_size - 1) for t in token_ids]
 
         # Use the slidding window to chunck the data into overlapping sequencs of max_length
         for i in range(0, len(token_ids) - max_length, stride):
@@ -42,9 +43,10 @@ def create_dataloader_v1(txt, batch_size=1024,
     # tokenizer = TokenizerV2(vocabs(txt))
     # tokenizer = tokenizer.encode(txt)
 
-    tokenizer = tiktoken
+    tokenizer = tiktoken.get_encoding('gpt2')
+    vocab_size = tokenizer.n_vocab
 
-    dataset = DatasetV1(txt, tokenizer, max_length, stride)
+    dataset = DatasetV1(txt, tokenizer, max_length, stride, vocab_size)
 
     dataloader = DataLoader(
         dataset,
