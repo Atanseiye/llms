@@ -8,9 +8,10 @@ import torch
 # ================================
 # Load Dataset
 # ================================
-with open('the-verdict.txt', 'r') as f:
+with open('tokenizerss/cleaned_yoruba_text.txt', 'r', encoding='utf-8') as f:
     text_data = f.read()
 
+# text_data = text_data[:20000]
 # ================================
 # Tokenize Dataset
 # ================================
@@ -31,7 +32,7 @@ torch.manual_seed(42)
 
 train_loader = create_dataloader_v1(
     train_data, 
-    batch_size=2,
+    batch_size=4,
     max_length= YOR_GPT_CONFIG_124M['context_lenght'], 
     stride= YOR_GPT_CONFIG_124M['context_lenght'], 
     num_workers=0,
@@ -41,7 +42,7 @@ train_loader = create_dataloader_v1(
 
 val_loader = create_dataloader_v1(
     val_data, 
-    batch_size=2,
+    batch_size=4,
     max_length= YOR_GPT_CONFIG_124M['context_lenght'], 
     stride= YOR_GPT_CONFIG_124M['context_lenght'], 
     num_workers=0,
