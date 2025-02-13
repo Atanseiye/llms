@@ -55,8 +55,8 @@ def generate_text(model, tokenizer, seed_text, max_length=50):
 # Run Inference
 # ================================
 if __name__ == "__main__":
-    checkpoint_path = "yor_gpt_model.pth"  # Change this to your saved checkpoint
-    seed_text = "It had always been his fate to have women say such things of him:"  # Example Yoruba input
+    checkpoint_path = "checkpoints/model_epoch_16.pt"  # Change this to your saved checkpoint
+    seed_text = "Can you please tell me what the story is about"  # Example Yoruba input
 
     # Load model
     model, device = load_model(checkpoint_path)

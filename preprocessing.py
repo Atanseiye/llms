@@ -11,8 +11,11 @@ class DatasetV1(Dataset):
         self.target_ids = []
 
         # Tokenize the entire text..
-        tokenizer = TokenizerV2(vocabs(txt))  
-        token_ids = tokenizer.encode(txt)
+        # tokenizer = TokenizerV2(vocabs(txt))  
+        # token_ids = tokenizer.encode(txt)
+
+        # for small test
+        token_ids = tokenizer.get_encoding('gpt2').encode(txt, allowed_special={"<|endoftext|>"})
 
         # Use the slidding window to chunck the data into overlapping sequencs of max_length
         for i in range(0, len(token_ids) - max_length, stride):
@@ -32,13 +35,14 @@ class DatasetV1(Dataset):
 #            Data Loader instance generator
 # ====================================================
 
-def create_dataloader_v1(txt, batch_size=4, 
+def create_dataloader_v1(txt, batch_size=1024, 
                          max_length=256, stride=128, shuffle=True, 
                          drop_last=True, num_workers=0):
     
-    tokenizer = TokenizerV2(vocabs(txt))
-    tokenizer = tokenizer.encode(txt)
-    # tokenizer = tiktoken.get_encoding('gpt2')
+    # tokenizer = TokenizerV2(vocabs(txt))
+    # tokenizer = tokenizer.encode(txt)
+
+    tokenizer = tiktoken
 
     dataset = DatasetV1(txt, tokenizer, max_length, stride)
 
