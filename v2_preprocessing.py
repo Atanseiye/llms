@@ -13,36 +13,36 @@ class DatasetV1(Dataset):
         self.input_ids = []
         self.target_ids = []
 
-        token_ids = tokenizer.encode(txt, allowed_special={'<|endoftext|>', '<|unk|>'})
+        # Tokenize the input text while excluding special tokens
+        token_ids = tokenizer.encode(txt, allowed_special={'<|endoftext|>', '<|unk|>'}).ids
 
-        # Handle case where input text is too short
+        # Ensure padding if the text is too short
         if len(token_ids) < max_length:
-            token_ids = token_ids + [tokenizer.pad_token_id] * (max_length - len(token_ids))  
+            # Add padding tokens
+            pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.token_to_id('<pad>')
+            token_ids = token_ids + [pad_token_id] * (max_length - len(token_ids))  
 
-
-        for i in range(0, len(token_ids) - max_length, stride):
+        # Create chunks with stride
+        for i in range(0, len(token_ids) - max_length + 1, stride):  # Adjust stride loop
             input_chunk = token_ids[i:i + max_length]
-            target_chunk = token_ids[i + 1: i + max_length + 1]
+            target_chunk = token_ids[i + 1:i + max_length + 1]  # Target is shifted by one token
 
-            self.input_ids.append(torch.tensor(input_chunk))
-            self.target_ids.append(torch.tensor(target_chunk))
+            self.input_ids.append(torch.tensor(input_chunk, dtype=torch.long))
+            self.target_ids.append(torch.tensor(target_chunk, dtype=torch.long))
 
     def __len__(self):
         return len(self.input_ids)
 
     def __getitem__(self, index):
-        return (
-            torch.tensor(self.input_ids[index], dtype=torch.long), 
-            torch.tensor(self.target_ids[index], dtype=torch.long)
-        )
+        return self.input_ids[index], self.target_ids[index]
 
 # ================================
 # DataLoader Function
 # ================================
 def create_dataloader_v1(txt, batch_size=4, max_length=256, stride=128, shuffle=True, drop_last=True, num_workers=0):
     # tokenizer = TokenizerV2(vocabs(txt))
-    # tokenizer = Tokenizer.from_file('tokenizerss/yoruba_tokenizer.json')
-    tokenizer = tiktoken.get_encoding('gpt2')
+    tokenizer = Tokenizer.from_file('tokenizerss/yoruba_tokenizer.json')
+    # tokenizer = tiktoken.get_encoding('gpt2')
     dataset = DatasetV1(txt, tokenizer, max_length, stride)
 
     dataloader = DataLoader(
