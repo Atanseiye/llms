@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 from tokenizers import Tokenizer
 from tokenizers.models import BPE
+import tiktoken
 
 # ================================
 # Dataset Class (Sliding Window)
@@ -12,7 +13,7 @@ class DatasetV1(Dataset):
         self.input_ids = []
         self.target_ids = []
 
-        token_ids = tokenizer.encode(txt).ids
+        token_ids = tokenizer.encode(txt, allowed_special={'<|endoftext|>', '<|unk|>'})
 
         # Handle case where input text is too short
         if len(token_ids) < max_length:
@@ -40,7 +41,8 @@ class DatasetV1(Dataset):
 # ================================
 def create_dataloader_v1(txt, batch_size=4, max_length=256, stride=128, shuffle=True, drop_last=True, num_workers=0):
     # tokenizer = TokenizerV2(vocabs(txt))
-    tokenizer = Tokenizer.from_file('tokenizerss/yoruba_tokenizer.json')
+    # tokenizer = Tokenizer.from_file('tokenizerss/yoruba_tokenizer.json')
+    tokenizer = tiktoken.get_encoding('gpt2')
     dataset = DatasetV1(txt, tokenizer, max_length, stride)
 
     dataloader = DataLoader(
@@ -116,7 +118,7 @@ class embedding:
 
 
 def text_to_token_ids(text, tokenizer):
-    encoded = tokenizer.encode(text, allowed_special=['<|endoftext|>', '<|unk|>'])
+    encoded = tokenizer.encode(text, allowed_special={'<|endoftext|>', '<|unk|>'})
     return torch.tensor(encoded).unsqueeze(0)
 
 def token_ids_to_text(token_ids, tokenizer):

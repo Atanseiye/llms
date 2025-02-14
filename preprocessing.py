@@ -15,7 +15,7 @@ class DatasetV1(Dataset):
         # token_ids = tokenizer.encode(txt)
 
         # for small test
-        token_ids = tokenizer.encode(txt, disallowed_special=())
+        token_ids = tokenizer.encode(txt, allowed_special={'<|endoftext|>', '<|unk|>'})
         token_ids = [min(t, vocab_size - 1) for t in token_ids]
 
         # Use the slidding window to chunck the data into overlapping sequencs of max_length

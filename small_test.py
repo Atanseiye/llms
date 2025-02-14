@@ -1,17 +1,25 @@
 from GPT import GPTModel
 from config import YOR_GPT_CONFIG_124M
 from preprocessing import create_dataloader_v1
+from postprocessing import generate_text_sample
+from v2_preprocessing import text_to_token_ids, token_ids_to_text
+import time
 import tiktoken
 import torch
 
 
+dataset_path = "tokenizerss/cleaned_yoruba_text.txt"  # Change this to your dataset file
+
 # ================================
 # Load Dataset
 # ================================
-with open('tokenizerss/cleaned_yoruba_text.txt', 'r', encoding='utf-8') as f:
-    text_data = f.read()
+def load_data():
+    with open(dataset_path, 'r', encoding='utf-8') as f:
+        text_data = f.read()
+    return text_data
 
-# text_data = text_data[:20000]
+text_data = load_data()
+text_data = text_data[:30000]
 # ================================
 # Tokenize Dataset
 # ================================
@@ -32,7 +40,7 @@ torch.manual_seed(42)
 
 train_loader = create_dataloader_v1(
     train_data, 
-    batch_size=4,
+    batch_size=2,
     max_length= YOR_GPT_CONFIG_124M['context_lenght'], 
     stride= YOR_GPT_CONFIG_124M['context_lenght'], 
     num_workers=0,
@@ -42,7 +50,7 @@ train_loader = create_dataloader_v1(
 
 val_loader = create_dataloader_v1(
     val_data, 
-    batch_size=4,
+    batch_size=2,
     max_length= YOR_GPT_CONFIG_124M['context_lenght'], 
     stride= YOR_GPT_CONFIG_124M['context_lenght'], 
     num_workers=0,
@@ -141,3 +149,88 @@ with torch.no_grad():
 print('Train Loss:', train_loss)
 print('Validation Loss:', val_loss)
     
+# ================================
+# Evaluate Model
+# ================================
+def evaluate_model(model, train_loader, val_loader, device, eval_iter):
+    model.eval()
+    with torch.no_grad():
+        train_loss = calc_loss_loader(train_loader, model, device, num_batches=eval_iter)
+        val_loss = calc_loss_loader(val_loader, model, device, num_batches=eval_iter)
+    model.train()
+    return train_loss, val_loss
+
+
+# ================================
+# Generating and printing Samples
+# ===============================_
+def generate_and_print_sample(model, tokenizer, device, start_context):
+    model.eval()
+    context_size = model.pos_emd.weight.shape[0]
+    encoded_text = text_to_token_ids(start_context, tokenizer).to(device)
+    with torch.no_grad():
+        token_ids = generate_text_sample(
+            model=model, idx=encoded_text,
+            max_new_tokens=50, context_size=context_size
+        )
+        decoded_text = token_ids_to_text(token_ids, tokenizer)
+        print(decoded_text.replace("\n", " "))
+        model.train()
+
+# ================================
+# Train Model
+# ================================
+def train_model(model, train_loader, val_loader, optimizer, device, num_epochs,
+                eval_freq, eval_iter, start_context, tokenizer):
+    # initialize list to track loss and token seen
+    train_losses, val_losses, track_tokens_seen = [], [], []
+    tokens_seen, global_step = 0, -1
+
+    # Main training loop
+    for epoch in range(num_epochs):
+        model.train()
+
+        for input_batch, target_batch in train_loader:
+            optimizer.zero_grad()
+            loss = calc_loss_batch(input_batch, target_batch, model, device)
+            loss.backward()
+            optimizer.step()
+            tokens_seen += input_batch.numel()
+            global_step += 1
+
+            # Optional evaluation Steps
+            if global_step % eval_freq == 0:
+                train_loss, val_loss = evaluate_model(model, train_loader, val_loader, device, eval_iter)
+                train_losses.append(train_loss)
+                val_losses.append(val_loss)
+                track_tokens_seen.append(tokens_seen)
+                print(f"Epochs: {epoch + 1} (Steps {global_step:06d}):"
+                      f"Train loss {train_loss:.3f}, Val loss {val_loss:.3f}")
+                
+        generate_and_print_sample(
+            model, tokenizer, device, start_context
+        )
+
+        return train_losses, val_losses, track_tokens_seen
+    
+
+
+
+
+# ================================
+# Run Training
+# ================================
+if __name__ == "__main__":
+    start_time = time.time()
+    model = GPTModel(YOR_GPT_CONFIG_124M)
+    model.to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.0004, weight_decay=.1)
+    num_epochs = 20
+    train_loss, val_loss, token_seen = train_model(
+        model, train_loader, val_loader, optimizer, device,
+        num_epochs=num_epochs, eval_freq=5, eval_iter=5,
+        start_context="Every effort moves you", tokenizer=tokenizer
+    )
+    end_time = time.time()
+    execution_time = (end_time - start_time) / 60
+    print(f'Training Completed in {execution_time:.2f} minutes.')

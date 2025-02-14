@@ -1,6 +1,6 @@
 YOR_GPT_CONFIG_124M = {
     'vocab_size':50257, # Vocabulary size
-    'context_lenght':1024, # THe context lenght
+    'context_lenght':256, # THe context lenght (original: 1024)
     'emb_dim':768, # Dimension of the Embedding
     'n_heads':12, # Number of Attention Heads
     'n_layers':12, # Number of Layers
