@@ -1,7 +1,7 @@
 from GPT import GPTModel
 from config import YOR_GPT_CONFIG_124M
 from preprocessing import create_dataloader_v1
-from postprocessing import generate_text_sample
+from postprocessing import generate_text_sample, generate_text_sample_, sample_from_top_k_p
 from v2_preprocessing import text_to_token_ids, token_ids_to_text
 import time
 import tiktoken
@@ -169,7 +169,7 @@ def generate_and_print_sample(model, tokenizer, device, start_context):
     context_size = model.pos_emd.weight.shape[0]
     encoded_text = text_to_token_ids(start_context, tokenizer).to(device)
     with torch.no_grad():
-        token_ids = generate_text_sample(
+        token_ids = sample_from_top_k_p(
             model=model, idx=encoded_text,
             max_new_tokens=50, context_size=context_size
         )
